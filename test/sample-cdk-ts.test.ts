@@ -1,11 +1,11 @@
 import * as cdk from 'aws-cdk-lib';
 import { Template, Match } from 'aws-cdk-lib/assertions';
-import * as CdkSamTsExample from '../lib/cdk-sam-ts-example-stack';
+import * as SampleCdkTs from '../lib/sample-cdk-ts-stack';
 
 test('SQS Queue and SNS Topic Created', () => {
   const app = new cdk.App();
   // WHEN
-  const stack = new CdkSamTsExample.CdkSamTsExampleStack(app, 'MyTestStack');
+  const stack = new SampleCdkTs.SampleCdkTsStack(app, 'MyTestStack');
   // THEN
 
   const template = Template.fromStack(stack);
