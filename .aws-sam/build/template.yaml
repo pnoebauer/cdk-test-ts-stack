@@ -1,0 +1,223 @@
+Resources:
+  SampleCdkTsLambdaServiceRoleF8799936:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: SampleCdkTsStack/SampleCdkTsLambda/ServiceRole/Resource
+  SampleCdkTsLambdaE79D20E0:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code: SampleCdkTsLambdaE79D20E0
+      Handler: app.lambdaHandler
+      Role:
+        Fn::GetAtt:
+        - SampleCdkTsLambdaServiceRoleF8799936
+        - Arn
+      Runtime: nodejs20.x
+    DependsOn:
+    - SampleCdkTsLambdaServiceRoleF8799936
+    Metadata:
+      SamNormalized: true
+      SamResourceId: SampleCdkTsLambda
+      aws:asset:is-bundled: false
+      aws:asset:path: /Users/Philip.noebauer/Desktop/test-projects/cdk-test-ts-stack/testFunction
+      aws:asset:property: Code
+      aws:cdk:path: SampleCdkTsStack/SampleCdkTsLambda/Resource
+  MyApi49610EDF:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      CorsConfiguration:
+        AllowMethods:
+        - GET
+        - DELETE
+        - PUT
+        - POST
+        AllowOrigins:
+        - '*'
+      Name: My API
+      ProtocolType: HTTP
+    Metadata:
+      aws:cdk:path: SampleCdkTsStack/MyApi/Resource
+  MyApiDefaultStageB2EF93C6:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId:
+        Ref: MyApi49610EDF
+      AutoDeploy: true
+      StageName: $default
+    Metadata:
+      aws:cdk:path: SampleCdkTsStack/MyApi/DefaultStage/Resource
+  MyApiGETinvokeTemplateIntegration4854F934:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: MyApi49610EDF
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::GetAtt:
+        - SampleCdkTsLambdaE79D20E0
+        - Arn
+      PayloadFormatVersion: '2.0'
+    Metadata:
+      aws:cdk:path: SampleCdkTsStack/MyApi/GET--invoke/TemplateIntegration/Resource
+  MyApiGETinvokeTemplateIntegrationPermission9AC9E8B7:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+        - SampleCdkTsLambdaE79D20E0
+        - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+        - ''
+        - - 'arn:'
+          - Ref: AWS::Partition
+          - ':execute-api:'
+          - Ref: AWS::Region
+          - ':'
+          - Ref: AWS::AccountId
+          - ':'
+          - Ref: MyApi49610EDF
+          - /*/*/invoke
+    Metadata:
+      aws:cdk:path: SampleCdkTsStack/MyApi/GET--invoke/TemplateIntegration-Permission
+  MyApiGETinvokeFE04D754:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId:
+        Ref: MyApi49610EDF
+      AuthorizationType: NONE
+      RouteKey: GET /invoke
+      Target:
+        Fn::Join:
+        - ''
+        - - integrations/
+          - Ref: MyApiGETinvokeTemplateIntegration4854F934
+    Metadata:
+      aws:cdk:path: SampleCdkTsStack/MyApi/GET--invoke/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/11PQW6DQAx8S+6LC+SSa4JUNadW5AGRszjIAXYR9gZFiL9XuyhS1dPM2OPRuISiOEC+w1ky23RZzzdYLoq2MzjLdelxuDUIy2dwVtk7U93dX/5D08Ai7N1qGAdYat9TXERcjeyvKEIqcIxgZA+nYDvSEwoZHLlFpRlfzxKWL9XxOHI8jhDlRbFNaRuJo9oH3djZKbUTvpv8k8m3rqYm8WGyZFKBmMOujYbvoGPQZH1bqrurvGtY0zvONwQP+XiWORQF5LuHMGdTcMoDQb3hL870grpAAQAA
+    Metadata:
+      aws:cdk:path: SampleCdkTsStack/CDKMetadata/Default
+    Condition: CDKMetadataAvailable
+Outputs:
+  ApiEndpoint:
+    Value:
+      Fn::GetAtt:
+      - MyApi49610EDF
+      - ApiEndpoint
+Conditions:
+  CDKMetadataAvailable:
+    Fn::Or:
+    - Fn::Or:
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - af-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-east-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-northeast-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-northeast-2
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-southeast-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ap-southeast-2
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - ca-central-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - cn-north-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - cn-northwest-1
+    - Fn::Or:
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-central-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-north-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-west-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-west-2
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - eu-west-3
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - il-central-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - me-central-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - me-south-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - sa-east-1
+    - Fn::Or:
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-east-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-east-2
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-west-1
+      - Fn::Equals:
+        - Ref: AWS::Region
+        - us-west-2
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically
+      retrieved from SSM Parameter Store. [cdk:skip]
+Rules:
+  CheckBootstrapVersion:
+    Assertions:
+    - Assert:
+        Fn::Not:
+        - Fn::Contains:
+          - - '1'
+            - '2'
+            - '3'
+            - '4'
+            - '5'
+          - Ref: BootstrapVersion
+      AssertDescription: CDK bootstrap stack version 6 required. Please run 'cdk bootstrap'
+        with a recent version of the CDK CLI.

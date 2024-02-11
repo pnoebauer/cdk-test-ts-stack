@@ -1,7 +1,7 @@
 {
   "name": "sample-cdk-ts",
   "version": "0.1.0",
-  "type": "module",
+  "type": "commonjs",
   "bin": {
     "sample-cdk-ts": "bin/sample-cdk-ts.js"
   },
