@@ -18,7 +18,7 @@ export class SampleLambda extends Function {
     constructor(scope: Construct, id: string, prop?: FunctionProps) {
         super(scope, id, {
             runtime: lambda.Runtime.NODEJS_20_X,
-            code: lambda.Code.fromAsset('./testFunction'),
+            code: lambda.Code.fromAsset('./lambdaFunction'),
             // handler: 'app.handler',
             handler: 'app.lambdaHandler',
         });
@@ -54,7 +54,7 @@ export class SampleCdkTsStack extends Stack {
         // });
 
         const lambdaFct = new lambda.Function(this, 'SampleCdkTsLambda', {
-            code: lambda.Code.fromAsset('./testFunction'),
+            code: lambda.Code.fromAsset('./lambdaFunction'),
             runtime: lambda.Runtime.NODEJS_20_X,
             handler: 'app.lambdaHandler',
             // handler: 'app.handler'
@@ -62,7 +62,7 @@ export class SampleCdkTsStack extends Stack {
         });
 
         // const lambdaFct = new SampleLambda(this, 'SampleCdkTsLambda', {
-        //     code: lambda.Code.fromAsset('./testFunction'),
+        //     code: lambda.Code.fromAsset('./lambdaFunction'),
         //     runtime: lambda.Runtime.NODEJS_20_X,
         //     handler: 'app.lambdaHandler',
         //     // handler: 'app.handler',
@@ -91,6 +91,12 @@ export class SampleCdkTsStack extends Stack {
         //     cloudWatchRole: true,
         //   });
         //------------------------
+
+        // // defines an API Gateway REST API resource backed by our "hello" function.
+        // new apigateway.LambdaRestApi(this, 'Endpoint', {
+        //     handler: lambdaFct,
+        // });
+
         // Create an API Gateway
         const httpApi = new HttpApi(this, 'MyApi', {
             apiName: 'My API',

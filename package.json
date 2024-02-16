@@ -7,6 +7,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "clean": "rm -rf **/*.js **/*.d.ts !node_modules/",
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk"

@@ -33,7 +33,7 @@ Resources:
       SamNormalized: true
       SamResourceId: SampleCdkTsLambda
       aws:asset:is-bundled: false
-      aws:asset:path: /Users/Philip.noebauer/Desktop/test-projects/cdk-test-ts-stack/testFunction
+      aws:asset:path: ../../cdk.out/asset.87913f0a68861c2bf78e33dc1cb691bcba6d305a6e7d2a99e05e060beaa77c0a
       aws:asset:property: Code
       aws:cdk:path: SampleCdkTsStack/SampleCdkTsLambda/Resource
   MyApi49610EDF:
